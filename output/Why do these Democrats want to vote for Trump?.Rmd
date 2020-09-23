@@ -2,10 +2,7 @@
 title: 'Why do these democrats want to vote for Trump? '
 author: "RuiLiang&rl2886"
 date: "9/23/2020"
-output:
-  html_document:
-    df_print: paged
-  pdf_document: default
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
