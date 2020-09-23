@@ -1,0 +1,240 @@
+---
+title: "Who will vote for Trump & Biden?"
+author: "RuiLiang&rl2886"
+date: "9/12/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE}
+library(haven)
+library(tidyverse)
+library(naniar)
+library(labelled)
+library(ggplot2)
+```
+
+## Load data
+
+```{r echo=FALSE}
+pilot_data <- read_sav("/Users/raymondliang/Documents/GitHub/Fall2020-Project1-rl2886-ray/data/anes_pilot_2020ets_sav/anes_pilot_2020ets_sav.SAV")
+```
+
+## Missing data checking
+Column vidx has two missing data.Vidx it's the question about 'dose R know State Voter ID law?',therefore to be fair, I would eliminate this two rows of data.
+```{r echo=FALSE}
+any(is.na(pilot_data))
+pilot_data %>%
+    gather(key = "key", value = "val") %>%
+    mutate(is.missing = is.na(val)) %>%
+    group_by(key, is.missing) %>%
+    summarise(num.missing = n()) %>%
+    filter(is.missing==T) %>%
+    select(-is.missing) %>%
+    arrange(desc(num.missing)) 
+pilot_data_1<-pilot_data[-which(is.na(pilot_data$vidx)),]
+```
+
+## Population of the data 
+The survey sample is consistent with the race demographic data from US census bureau, which mean our inference from data will be more precise.
+
+```{r echo=FALSE}
+asian<-sum(pilot_data$race1_asian)
+black<-sum(pilot_data$race1_black)
+hpi<-sum(pilot_data$race1_hpi)
+namer<-sum(pilot_data$race1_namer)
+white<-sum(pilot_data$race1_white)
+
+barplot(c(asian,black,hpi,namer,white),names=c('asian','black','hpi','namer','white'))
+```
+party ID
+```{r}
+
+ggplot(as.data.frame(pilot_data$pid1r), aes(x=as.factor(pilot_data$pid1r) )) +
+  geom_bar( )
+
+
+```
+
+religious
+```{r}
+
+ggplot(as.data.frame(pilot_data$relig1), aes(x=as.factor(pilot_data$relig1) )) +
+  geom_bar( )
+
+
+```
+
+income
+```{r}
+
+ggplot(as.data.frame(pilot_data$inc_anes), aes(x=as.factor(pilot_data$inc_anes) )) +
+  geom_bar( )
+
+```
+
+exp
+```{r}
+# travel exp
+ggplot(as.data.frame(pilot_data$exptravel_ever), aes(x=as.factor(pilot_data$exptravel_ever) )) +
+  geom_bar( )
+
+```
+
+
+demographics
+```{r}
+# birth
+ggplot(as.data.frame(pilot_data$birthyr), aes(x=as.factor(pilot_data$birthyr) )) +
+  geom_bar( )
+mean(pilot_data$birthyr)
+#sex
+ggplot(as.data.frame(pilot_data$sex), aes(x=as.factor(pilot_data$sex) )) +
+  geom_bar( )
+#educ
+ggplot(as.data.frame(pilot_data$educ), aes(x=as.factor(pilot_data$educ) )) +
+  geom_bar( )
+#children
+ggplot(as.data.frame(pilot_data$children), aes(x=as.factor(pilot_data$children) )) +
+  geom_bar( )
+```
+
+## Feeling towards President
+Under our data,the feeling rate towards president Trump  is  44.59 which means he is not favorable by our sample.In comparison, last president Obama is 59.25 and 2020 president candidate Joe Biden is 51.67.It seems like although the feelings toward Joe Biden is not a great favorable feeling, his rate still trump President trump.
+
+```{r echo=FALSE}
+mean(pilot_data$fttrump1)
+mean(pilot_data$ftobama1)
+mean(pilot_data$ftbiden1)
+```
+
+##How does each races feeling towards these three person?
+
+```{r echo=FALSE}
+mean(pilot_data$fttrump1[pilot_data$race1_black==1])
+mean(pilot_data$fttrump1[pilot_data$race1_asian==1])
+mean(pilot_data$fttrump1[pilot_data$race1_white==1])
+mean(pilot_data$fttrump1[pilot_data$race1_hpi==1])
+mean(pilot_data$fttrump1[pilot_data$race1_namer==1])
+
+mean(pilot_data$ftobama1[pilot_data$race1_black==1])
+mean(pilot_data$ftobama1[pilot_data$race1_asian==1])
+mean(pilot_data$ftobama1[pilot_data$race1_white==1])
+mean(pilot_data$ftobama1[pilot_data$race1_hpi==1])
+mean(pilot_data$ftobama1[pilot_data$race1_namer==1])
+
+mean(pilot_data$ftbiden1[pilot_data$race1_black==1])
+mean(pilot_data$ftbiden1[pilot_data$race1_asian==1])
+mean(pilot_data$ftbiden1[pilot_data$race1_white==1])
+mean(pilot_data$ftbiden1[pilot_data$race1_hpi==1])
+mean(pilot_data$ftbiden1[pilot_data$race1_namer==1])
+
+```
+
+## How does people think about President Trump's job performance?
+People are diverse towards the performance of Trump's.The number of people who approve Trump is 1474 which is larger than 1404, the number of people who disapprove Trump.
+
+```{r echo=FALSE}
+ggplot(as.data.frame(pilot_data$apppres7), aes(x=as.factor(pilot_data$apppres7) )) +
+  geom_bar( )
+length(pilot_data$apppres7[pilot_data$apppres7<4])
+length(pilot_data$apppres7[pilot_data$apppres7>4])
+```
+
+Eco performance
+Overall, people think he did a good job in Eco
+
+```{r echo=FALSE}
+ggplot(as.data.frame(pilot_data$econpres7), aes(x=as.factor(pilot_data$econpres7) )) +
+  geom_bar( )
+```
+
+Covid performance
+There are a lot of NA data, which doesnt make sense.
+```{r echo=FALSE}
+ggplot(as.data.frame(pilot_data$covidpres7), aes(x=as.factor(pilot_data$covidpres7) )) +
+  geom_bar( )
+pilot_data$mis_covid1
+ggplot(as.data.frame(pilot_data$mis_covid19), aes(x=as.factor(pilot_data$mis_covid19) )) +
+  geom_bar( )
+```
+
+## Voting
+The number of people who would like to vote Joe biden is lightly over Donald Trump.What kind of people would JB or Trump?
+```{r echo=FALSE}
+d1<-pilot_data$vote20jb
+
+ggplot(as.data.frame(d1), aes(x=as.factor(d1) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+```
+
+## Trait
+Traits describe Donald Trump
+```{r echo=FALSE}
+d2<-pilot_data$dtleader1
+ggplot(as.data.frame(d2), aes(x=as.factor(d2) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+
+d3<-pilot_data$dtleader2
+ggplot(as.data.frame(d3), aes(x=as.factor(d3) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+     
+d4<-pilot_data$dtcares
+ggplot(as.data.frame(d4), aes(x=as.factor(d4) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+
+d5<-pilot_data$dthonest
+ggplot(as.data.frame(d5), aes(x=as.factor(d5) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+
+d6<-pilot_data$dtdiv
+ggplot(as.data.frame(d6), aes(x=as.factor(d6) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+
+d7<-pilot_data$dtknow
+ggplot(as.data.frame(d7), aes(x=as.factor(d7) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+```
+Traits describe Joe Biden
+```{r echo=FALSE}
+j2<-pilot_data$jbleader1
+ggplot(as.data.frame(j2), aes(x=as.factor(j2) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+
+j3<-pilot_data$jbleader2
+ggplot(as.data.frame(j3), aes(x=as.factor(j3) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+     
+j4<-pilot_data$jbcares
+ggplot(as.data.frame(j4), aes(x=as.factor(j4) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+
+j5<-pilot_data$jbhonest
+ggplot(as.data.frame(j5), aes(x=as.factor(j5) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+
+j6<-pilot_data$jbdiv
+ggplot(as.data.frame(j6), aes(x=as.factor(j6) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+
+j7<-pilot_data$jbknow
+ggplot(as.data.frame(j7), aes(x=as.factor(j7) )) +
+  geom_bar(color="blue", fill=rgb(0.1,0.4,0.5,0.7,0.9) )
+```
+Faith in experts
+```{r}
+
+ggplot(as.data.frame(pilot_data$experts), aes(x=as.factor(pilot_data$experts) )) +
+  geom_bar( )
+
+ggplot(as.data.frame(pilot_data$science), aes(x=as.factor(pilot_data$science) )) +
+  geom_bar( )
+
+ggplot(as.data.frame(pilot_data$exphelp), aes(x=as.factor(pilot_data$exphelp) )) +
+  geom_bar( )
+```
+##Other reference:
+https://www.pewresearch.org/politics/2020/08/13/perceptions-of-trump-and-biden/
