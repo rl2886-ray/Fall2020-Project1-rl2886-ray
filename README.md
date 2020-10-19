@@ -1,11 +1,11 @@
 # Applied Data Science @ Columbia
-## A "data story" on how Americans vote
+## A "data story" on how Americans vote: Why do these democrats want to vote for Trump?
 
 <img src="figs/title1.jpeg" width="500">
 
 ### [Project Description](doc/)
 
-+ Projec title: Why do these democrats want to vote for Trump?
++ Projec title: Why do these democrats want to vote for Trump? 
 + This project is conducted by [Rui(Raymond) Liang]
 
 + Project summary: According to the data from ANES, we can find that 2020 Trump's democrats are usually well-educated white young male democrats who are earning a descent salary and have more than one child. The reasons why they vote for trump: 1)Trump's free market policy. 2)They approve his president work performance. 3)They are very likely not favor of another president candidate Joe Biden.
