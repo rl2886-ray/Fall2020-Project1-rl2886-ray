@@ -1,13 +1,9 @@
 # Applied Data Science @ Columbia
-## Fall 2020
-## Project 1: A "data story" on how Americans vote
+## A "data story" on how Americans vote
 
 <img src="figs/title1.jpeg" width="500">
 
 ### [Project Description](doc/)
-This is the first and only *individual* (as opposed to *team*) this semester. 
-
-Term: Fall 2020
 
 + Projec title: Why do these democrats want to vote for Trump?
 + This project is conducted by [Rui(Raymond) Liang]
